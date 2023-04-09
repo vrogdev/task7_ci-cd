@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long id) {
+        IdentifiableValidator.validateId(id);
         return getUserIfExists(id);
     }
 

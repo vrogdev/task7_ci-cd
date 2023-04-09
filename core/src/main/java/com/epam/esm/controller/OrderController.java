@@ -13,6 +13,10 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Class {@code OrderController} represents endpoint of API which allows you to perform
+ * operations on orders.
+ */
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
@@ -29,6 +33,11 @@ public class OrderController {
         this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
+    /**
+     * This method is used to get page of all orders.
+     * @param page page requested information
+     * @return {@link PagedModel} of OrderDto model
+     */
     @GetMapping
     public PagedModel<OrderDto> getAll(@PageableDefault(
             sort = {"id"},
@@ -37,12 +46,23 @@ public class OrderController {
         return pagedResourcesAssembler.toModel(orders, orderConverter);
     }
 
+    /**
+     * This method is used to get order dto by id.
+     * @param orderId order's id
+     * @return order dto
+     */
     @GetMapping("/{orderId}")
     @ResponseStatus(HttpStatus.OK)
     public OrderDto getById(@PathVariable("orderId") Long orderId){
         return orderConverter.toModel(orderService.getOrderById(orderId));
     }
 
+    /**
+     * This method is used to get all orders by user's id.
+     * @param userId provided user's id
+     * @param page page requested information
+     * @return list of orders dto
+     */
     @GetMapping("/users/{userId}")
     public PagedModel<OrderDto> ordersByUserId(
             @PathVariable long userId,
@@ -54,6 +74,12 @@ public class OrderController {
         return pagedResourcesAssembler.toModel(orders, orderConverter);
     }
 
+    /**
+     * This method is used to make order - buy certificate.
+     * @param userId user's id
+     * @param giftCertificateId gift certificate id
+     * @return created {@link OrderDto} entity.
+     */
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK)
     public OrderDto createOrder(@RequestParam("userId") Long userId,

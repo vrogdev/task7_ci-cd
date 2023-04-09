@@ -53,6 +53,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order createOrder(Long userId, Long certificateId) {
+        IdentifiableValidator.validateId(userId);
+        IdentifiableValidator.validateId(certificateId);
+
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ServiceException(ServiceExceptionMessages.USER_ID_NOT_FOUND, ServiceExceptionCodes.NO_ENTITIES, HttpStatus.NOT_FOUND));
 
@@ -72,6 +75,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Page<Order> getAllOrdersByUserId(Long userId, Pageable page) {
+        IdentifiableValidator.validateId(userId);
+
         Page<Order> orders = orderRepository.findAllByUser_Id(userId, page);
 
         if (orders.getTotalElements() == 0)

@@ -3,7 +3,6 @@ package com.epam.esm.controller;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.converter.DtoConverter;
 import com.epam.esm.model.entity.GiftCertificate;
-import com.epam.esm.service.exception.ServiceException;
 import com.epam.esm.service.interfaces.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Class {@code GiftCertificateController} represents endpoint of API which allows you to perform
+ * operations on gift certificates.
+ */
 @RestController
 @RequestMapping("/api/certificates")
 public class GiftCertificateController {
@@ -29,11 +32,12 @@ public class GiftCertificateController {
         this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
-    @GetMapping("/{id}")
-    public GiftCertificate getCertificateById(@PathVariable long id) {
-        return certificateService.getCertificateById(id);
-    }
-
+    /**
+     * This method retrieves all gift certificates with Page request.
+     *
+     * @param page page requested information
+     * @return Page with listed certificates and hateoas information
+     */
     @GetMapping
     public PagedModel<GiftCertificateDto> getAllCertificates(
             @PageableDefault(
@@ -44,6 +48,24 @@ public class GiftCertificateController {
         return pagedResourcesAssembler.toModel(certificates, certificateConverter);
     }
 
+    /**
+     * This method is used to get GiftCertificate by id.
+     *
+     * @param id GiftCertificate's id
+     * @return GiftCertificate
+     */
+    @GetMapping("/{id}")
+    public GiftCertificate getCertificateById(@PathVariable long id) {
+        return certificateService.getCertificateById(id);
+    }
+
+    /**
+     * This method is used to get GiftCertificates by name.
+     *
+     * @param name search parameter
+     * @param page page requested information
+     * @return Page with listed certificates and hateoas information
+     */
     @GetMapping(value = "/name/{name}")
     public PagedModel<GiftCertificateDto> getByName(@PathVariable String name,
                                                     @PageableDefault(
@@ -54,6 +76,13 @@ public class GiftCertificateController {
         return pagedResourcesAssembler.toModel(certificates, certificateConverter);
     }
 
+    /**
+     * This method is used to get GiftCertificates by description.
+     *
+     * @param description search parameter
+     * @param page        page requested information
+     * @return Page with listed certificates and hateoas information
+     */
     @GetMapping(value = "/description/{description}")
     public PagedModel<GiftCertificateDto> getByDescription(@PathVariable String description,
                                                            @PageableDefault(
@@ -63,6 +92,13 @@ public class GiftCertificateController {
         return pagedResourcesAssembler.toModel(certificates, certificateConverter);
     }
 
+    /**
+     * This method is used to get GiftCertificates by description.
+     *
+     * @param tagName search parameter
+     * @param page    page requested information
+     * @return Page with listed certificates and hateoas information
+     */
     @GetMapping(value = "/tagname/{tagName}")
     public PagedModel<GiftCertificateDto> getByTagName(@PathVariable String tagName,
                                                        @PageableDefault(
@@ -72,18 +108,37 @@ public class GiftCertificateController {
         return pagedResourcesAssembler.toModel(certificates, certificateConverter);
     }
 
+    /**
+     * Creates a new {@link GiftCertificate} entity in the data source.
+     *
+     * @param certificate a new {@link GiftCertificate} entity for saving
+     * @return string with Success result information
+     */
     @PostMapping
     public ResponseEntity<String> createCertificate(@RequestBody GiftCertificate certificate) {
         certificateService.insertCertificate(certificate);
         return ResponseEntity.status(HttpStatus.CREATED).body("Success");
     }
 
+    /**
+     * Delete from database a {@link GiftCertificate} by specified ID.
+     *
+     * @param id a {@link GiftCertificate} ID.
+     * @return string with result information
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCertificateById(@PathVariable long id) throws ServiceException {
+    public ResponseEntity<String> deleteCertificateById(@PathVariable long id) {
         certificateService.removeCertificateById(id);
         return ResponseEntity.status(HttpStatus.CREATED).body("Entity with id = " + id + " removed successfully");
     }
 
+    /**
+     * Updates a {@link GiftCertificate} by specified ID.
+     *
+     * @param id          a {@link GiftCertificate} ID.
+     * @param certificate a {@link GiftCertificate} with updated information.
+     * @return string with success result
+     */
     @PutMapping("/{id}")
     public ResponseEntity<String> updateCertificate(@PathVariable long id,
                                                     @RequestBody GiftCertificate certificate) {

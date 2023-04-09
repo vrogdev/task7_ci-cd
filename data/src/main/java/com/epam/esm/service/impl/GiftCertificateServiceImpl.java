@@ -56,25 +56,27 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private void insertNewTags(GiftCertificate item) {
         List<Tag> tags = item.getTags();
+        if (tags != null) {
+            tags.forEach(tag -> {
+                if (tag.getId() != 0) {
+                    Tag tagFromDB = tagRepository.findById(tag.getId())
+                            .orElseThrow(() -> new ServiceException(ServiceExceptionMessages.TAG_NOT_FOUND, ServiceExceptionCodes.BAD_ID, HttpStatus.NOT_FOUND));
 
-        tags.forEach(tag -> {
-            if (tag.getId() != 0) {
-                Tag tagFromDB = tagRepository.findById(tag.getId())
-                        .orElseThrow(() -> new ServiceException(ServiceExceptionMessages.TAG_NOT_FOUND, ServiceExceptionCodes.BAD_ID, HttpStatus.NOT_FOUND));
-
-                if (!tagFromDB.getName().equals(tag.getName())) {
-                    throw new ServiceException(ServiceExceptionMessages.TAG_NOT_MATCH, ServiceExceptionCodes.BAD_TAG_NAME, HttpStatus.BAD_REQUEST);
-                }
-            } else {
-                if (tagRepository.existsTagByName(tag.getName())) {
-                    Tag tagFromDB = tagRepository.findByName(tag.getName());
-                    tag.setId(tagFromDB.getId());
-
+                    if (!tagFromDB.getName().equals(tag.getName())) {
+                        throw new ServiceException(ServiceExceptionMessages.TAG_NOT_MATCH, ServiceExceptionCodes.BAD_TAG_NAME, HttpStatus.BAD_REQUEST);
+                    }
                 } else {
-                    tagRepository.save(tag);
+                    if (tagRepository.existsTagByName(tag.getName())) {
+                        Tag tagFromDB = tagRepository.findByName(tag.getName())
+                                .orElseThrow(() -> new ServiceException("Tag with given name not found in db"));
+                        tag.setId(tagFromDB.getId());
+
+                    } else {
+                        tagRepository.save(tag);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -134,7 +136,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public Page<GiftCertificate> getCertificatesByPartOfTagName(String tagNames, Pageable page) {
-        Page<GiftCertificate> certificates = certificateRepository.getCertificatesWithTagsByTagPartOfName(tagNames, page);
+        Page<GiftCertificate> certificates = certificateRepository.getCertificatesWithTagsByPartOfTagName(tagNames, page);
         checkIfCertificatesExists(certificates);
         return certificates;
     }

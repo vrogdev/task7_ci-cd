@@ -7,13 +7,16 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * {@code TagRepository} describes operations with Tag entity extending JPA repository to work with database tables.
+ */
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
-    /*    @Query("select t from Order o " +
-            "join o.certificate c " +
-            "join c.tags t " +
-            "group by t.id order by count(t.id) desc, sum(o.cost) desc")*/
-
+    /**
+     * Method for retrieving most widely used {@code Tag} of {@code User} with the highest cost
+     * of all orders from table.
+     * @return {@code Tag} tag
+     */
     @Query(value = "select t.id,t.name from gift_certificate gc\n" +
             "    join gift_certificate_has_tag gcht on gc.id = gcht.gift_certificate_id\n" +
             "    join tag t on gcht.tag_id = t.id\n" +
@@ -21,6 +24,17 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
             "    group by t.id order by count(t.id) desc, sum(o.cost) desc limit 1", nativeQuery = true)
     Optional<Tag> findMostWidelyUsedTagOfUserWithTheHighestCostOfAllOrders();
 
+    /**
+     * Method checking if Tag with given name already exists in database
+     * @param name given name to check
+     * @return {@code Boolean} flag
+     */
     boolean existsTagByName(String name);
-    Tag findByName(String name);
+
+    /**
+     * Method search for {@code Tag} with provided name
+     * @param name of Tag to search
+     * @return {@cade Optional} with search result
+     */
+    Optional<Tag> findByName(String name);
 }
