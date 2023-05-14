@@ -5,14 +5,12 @@ import com.epam.esm.model.repository.TagRepository;
 import com.epam.esm.service.exception.ServiceException;
 import com.epam.esm.service.exception.ServiceExceptionCodes;
 import com.epam.esm.service.exception.ServiceExceptionMessages;
-import com.epam.esm.service.interfaces.TagService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.verification.VerificationMode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -45,7 +43,7 @@ class TagServiceImplTest {
         List<Tag> tags = List.of(TAG_1, TAG_2, TAG_3, TAG_4, TAG_5);
 
         Page<Tag> pageOfTags = new PageImpl<>(tags);
-        PageRequest page = PageRequest.of(1, 5);
+        PageRequest page = PageRequest.of(0, 5);
 
 
         Mockito.when(repo.findAll(page)).thenReturn(pageOfTags);
@@ -102,12 +100,5 @@ class TagServiceImplTest {
     @Test
     void removeTagByIdInvalid() {
         assertThrows(ServiceException.class, () -> tagService.removeTagById(-1));
-    }
-
-    @Test
-    void getTheMostWidelyUsedTagOfUserWithTheHighestCostOfAllOrders() {
-        Mockito.when(repo.findMostWidelyUsedTagOfUserWithTheHighestCostOfAllOrders()).thenReturn(Optional.of(TAG_1));
-        tagService.getTheMostWidelyUsedTagOfUserWithTheHighestCostOfAllOrders();
-        Mockito.verify(repo, Mockito.times(1)).findMostWidelyUsedTagOfUserWithTheHighestCostOfAllOrders();
     }
 }

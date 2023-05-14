@@ -34,7 +34,7 @@ class UserServiceImplTest {
         PageImpl<User> page = new PageImpl<>(new ArrayList<>());
         when(repo.findAll(any(Pageable.class))).thenReturn(page);
 
-        assertEquals(page, service.getAllUsers(PageRequest.of(1, 5)));
+        assertEquals(page, service.getAllUsers(PageRequest.of(0, 5)));
     }
 
     @Test

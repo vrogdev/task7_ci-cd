@@ -2,6 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.converter.DtoConverter;
+import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
 import com.epam.esm.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,5 +58,16 @@ public class UserController {
     public UserDto userById(@PathVariable long id) {
         User user = userService.getUserById(id);
         return userConverter.toModel(user);
+    }
+
+    /**
+     * returns the most used tag of the User by id with the highest cost of orders
+     *
+     * @param id ID of user.
+     * @return Tag with given parameters
+     */
+    @GetMapping("/popular/{id}")
+    public Tag mostWidelyUsedTagOfUserWithTheHighestCostOfAllOrders(@PathVariable long id) {
+        return userService.getTheMostWidelyUsedTagOfUserWithTheHighestCostOfAllOrders(id);
     }
 }

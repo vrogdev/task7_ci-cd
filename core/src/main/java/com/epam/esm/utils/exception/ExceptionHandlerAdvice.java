@@ -1,6 +1,7 @@
 package com.epam.esm.utils.exception;
 
 import com.epam.esm.service.exception.ServiceException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,6 +24,16 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
         exceptionResponse.setErrorCode(exceptionCode);
 
         return new ResponseEntity<>(exceptionResponse, httpStatus);
+    }
+    @ExceptionHandler({
+            PropertyReferenceException.class
+    })
+    public final ResponseEntity<ExceptionResponse> handleBadSortPropertyException(Exception exception) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse();
+        exceptionResponse.setErrorMessage(exception.getMessage());
+        exceptionResponse.setErrorCode(HttpStatus.BAD_REQUEST.toString());
+
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
 /*    @ExceptionHandler({

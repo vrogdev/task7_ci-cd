@@ -49,7 +49,7 @@ class OrderServiceImplTest {
 
     @Test
     void getAllOrders() {
-        PageRequest page = PageRequest.of(1, 5);
+        PageRequest page = PageRequest.of(0, 5);
         PageImpl<Order> orders = new PageImpl<>(List.of(new Order()));
         when(orderRepository.findAll(any(Pageable.class))).thenReturn(orders);
         Page<Order> actualOrders = service.getAllOrders(page);
@@ -58,8 +58,9 @@ class OrderServiceImplTest {
 
     @Test
     void removeOrder() {
+        when(orderRepository.findById(any(Long.class))).thenReturn(Optional.of(new Order()));
         doNothing().when(orderRepository).delete(any(Order.class));
-        service.removeOrder(new Order());
+        service.removeOrder(1L);
         verify(orderRepository, times(1)).delete(new Order());
     }
 
@@ -90,7 +91,7 @@ class OrderServiceImplTest {
     @Test
     void getAllOrdersByUserId() {
         long userId = 1L;
-        PageRequest page = PageRequest.of(1, 5);
+        PageRequest page = PageRequest.of(0, 5);
 
         Page<Order> orders = new PageImpl<>(List.of(new Order()));
         when(orderRepository.findAllByUser_Id(userId, page)).thenReturn(orders);

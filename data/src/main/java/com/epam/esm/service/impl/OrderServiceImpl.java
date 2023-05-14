@@ -43,12 +43,29 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Page<Order> getAllOrders(Pageable page) {
-        return orderRepository.findAll(page);
+        Page<Order> orders = orderRepository.findAll(page);
+        checkPageBounds(page, orders);
+
+        return orders;
+    }
+
+    private void checkPageBounds(Pageable page, Page<Order> orders) {
+        int pageNumber = page.getPageNumber();
+        int totalPages = orders.getTotalPages();
+
+        if(pageNumber >= totalPages)
+            throw new ServiceException(
+                    "Page out of bounds",
+                    ServiceExceptionCodes.BAD_ID,
+                    HttpStatus.BAD_REQUEST);
     }
 
     @Override
-    public void removeOrder(Order item) {
-        orderRepository.delete(item);
+    public void removeOrder(Long id) {
+        IdentifiableValidator.validateId(id);
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ServiceException("No order found for id = " + id));
+        orderRepository.delete(order);
     }
 
     @Override
@@ -61,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
 
         GiftCertificate giftCertificate =
                 giftCertificateRepository.findById(certificateId).orElseThrow(() ->
-                        new ServiceException(ServiceExceptionMessages.BAD_ID, ServiceExceptionCodes.BAD_ID, HttpStatus.NOT_FOUND));
+                        new ServiceException(ServiceExceptionMessages.BAD_CERTIFICATE_ID, ServiceExceptionCodes.BAD_ID, HttpStatus.NOT_FOUND));
 
         Order order = new Order();
 
@@ -84,6 +101,7 @@ public class OrderServiceImpl implements OrderService {
                     ServiceExceptionCodes.NO_ENTITIES,
                     HttpStatus.NOT_FOUND);
 
+        checkPageBounds(page, orders);
         return orders;
     }
 }

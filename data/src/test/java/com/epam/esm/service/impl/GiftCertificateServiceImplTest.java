@@ -123,7 +123,7 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void getCertificatesByPartOfName() {
-        PageRequest page = PageRequest.of(1, 5);
+        PageRequest page = PageRequest.of(0, 5);
         String partialName = "someName";
 
         Page<GiftCertificate> certificates = new PageImpl<>(Arrays.asList(new GiftCertificate()));
@@ -146,7 +146,7 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void getCertificatesByPartOfDescription() {
-        PageRequest page = PageRequest.of(1, 5);
+        PageRequest page = PageRequest.of(0, 5);
         String partialDesc = "someDesc";
 
         Page<GiftCertificate> certificates = new PageImpl<>(Arrays.asList(new GiftCertificate()));
@@ -158,7 +158,7 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void getCertificatesByPartOfTagName() {
-        PageRequest page = PageRequest.of(1, 5);
+        PageRequest page = PageRequest.of(0, 5);
         String partialTagName = "someTagName";
 
         Page<GiftCertificate> certificates = new PageImpl<>(Arrays.asList(new GiftCertificate()));

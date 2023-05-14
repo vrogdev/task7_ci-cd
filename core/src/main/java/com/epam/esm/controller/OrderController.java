@@ -11,6 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -86,5 +87,11 @@ public class OrderController {
                              @RequestParam("giftCertificateId") Long giftCertificateId) {
         Order order = orderService.createOrder(userId, giftCertificateId);
         return orderConverter.toModel(order);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCertificateById(@PathVariable long id) {
+        orderService.removeOrder(id);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Entity with id = " + id + " removed successfully");
     }
 }

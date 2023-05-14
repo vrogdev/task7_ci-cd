@@ -12,6 +12,4 @@ public interface TagService {
     void insertTag(Tag item);
 
     void removeTagById(long id);
-
-    Tag getTheMostWidelyUsedTagOfUserWithTheHighestCostOfAllOrders();
 }

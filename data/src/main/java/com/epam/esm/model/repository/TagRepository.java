@@ -3,6 +3,7 @@ package com.epam.esm.model.repository;
 import com.epam.esm.model.entity.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -21,8 +22,10 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
             "    join gift_certificate_has_tag gcht on gc.id = gcht.gift_certificate_id\n" +
             "    join tag t on gcht.tag_id = t.id\n" +
             "    join orders o on gc.id = o.gift_certificate_id\n" +
+            "    join user u on o.user_id = u.id\n" +
+            "    where u.id = :userId \n" +
             "    group by t.id order by count(t.id) desc, sum(o.cost) desc limit 1", nativeQuery = true)
-    Optional<Tag> findMostWidelyUsedTagOfUserWithTheHighestCostOfAllOrders();
+    Optional<Tag> findMostWidelyUsedTagOfUserWithTheHighestCostOfAllOrders(@Param("userId") Long userId);
 
     /**
      * Method checking if Tag with given name already exists in database

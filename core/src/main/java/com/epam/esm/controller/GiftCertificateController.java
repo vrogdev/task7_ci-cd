@@ -14,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 /**
  * Class {@code GiftCertificateController} represents endpoint of API which allows you to perform
  * operations on gift certificates.
@@ -73,7 +76,21 @@ public class GiftCertificateController {
                                                             size = 5) Pageable page) {
         Page<GiftCertificate> certificates = certificateService.getCertificatesByPartOfName(name, page);
 
-        return pagedResourcesAssembler.toModel(certificates, certificateConverter);
+        PagedModel<GiftCertificateDto> certificateDtos = pagedResourcesAssembler.toModel(certificates, certificateConverter);
+
+        PagedModel<GiftCertificateDto> methodOn = methodOn(GiftCertificateController.class).getByName(name, page);
+
+        addSortingLinks(page, certificateDtos, methodOn);
+
+        return certificateDtos;
+    }
+
+    private void addSortingLinks(Pageable page, PagedModel<GiftCertificateDto> certificateDtos, PagedModel<GiftCertificateDto> methodOn) {
+        // 	"http://localhost:8080/api/certificates/name/new?page=0&size=5&sort=id,asc"
+        certificateDtos.add(linkTo(methodOn).slash("?page=" + page.getPageNumber() + "&sort=name,asc").withSelfRel());
+        certificateDtos.add(linkTo(methodOn).slash("?page=" + page.getPageNumber() + "&sort=name,desc").withSelfRel());
+        certificateDtos.add(linkTo(methodOn).slash("?page=" + page.getPageNumber() + "&sort=createDate,asc").withSelfRel());
+        certificateDtos.add(linkTo(methodOn).slash("?page=" + page.getPageNumber() + "&sort=createDate,desc").withSelfRel());
     }
 
     /**
@@ -89,7 +106,12 @@ public class GiftCertificateController {
                                                                    sort = {"id"},
                                                                    size = 5) Pageable page) {
         Page<GiftCertificate> certificates = certificateService.getCertificatesByPartOfDescription(description, page);
-        return pagedResourcesAssembler.toModel(certificates, certificateConverter);
+        PagedModel<GiftCertificateDto> certificateDtos = pagedResourcesAssembler.toModel(certificates, certificateConverter);
+
+        PagedModel<GiftCertificateDto> methodOn = methodOn(GiftCertificateController.class).getByDescription(description, page);
+        addSortingLinks(page, certificateDtos, methodOn);
+
+        return certificateDtos;
     }
 
     /**
@@ -105,7 +127,12 @@ public class GiftCertificateController {
                                                                sort = {"id"},
                                                                size = 5) Pageable page) {
         Page<GiftCertificate> certificates = certificateService.getCertificatesByPartOfTagName(tagName, page);
-        return pagedResourcesAssembler.toModel(certificates, certificateConverter);
+        PagedModel<GiftCertificateDto> certificateDtos = pagedResourcesAssembler.toModel(certificates, certificateConverter);
+
+        PagedModel<GiftCertificateDto> methodOn = methodOn(GiftCertificateController.class).getByTagName(tagName, page);
+        addSortingLinks(page, certificateDtos, methodOn);
+
+        return certificateDtos;
     }
 
     /**

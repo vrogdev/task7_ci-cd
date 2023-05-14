@@ -59,16 +59,6 @@ public class TagController {
     }
 
     /**
-     * returns the most used tag of the User with the highest cost of orders
-     *
-     * @return Tag with given parameters
-     */
-    @GetMapping("/popular")
-    public Tag tagMostWidelyUsedTagOfUserWithTheHighestCostOfAllOrders() {
-        return tagService.getTheMostWidelyUsedTagOfUserWithTheHighestCostOfAllOrders();
-    }
-
-    /**
      * This method is used to create tag.
      *
      * @param tag to create

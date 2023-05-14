@@ -1,6 +1,8 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.model.entity.Tag;
 import com.epam.esm.model.entity.User;
+import com.epam.esm.model.repository.TagRepository;
 import com.epam.esm.model.repository.UserRepository;
 import com.epam.esm.service.exception.ServiceException;
 import com.epam.esm.service.exception.ServiceExceptionCodes;
@@ -16,15 +18,28 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final TagRepository tagRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, TagRepository tagRepository) {
         this.userRepository = userRepository;
+        this.tagRepository = tagRepository;
     }
 
     @Override
     public Page<User> getAllUsers(Pageable page) {
-        return userRepository.findAll(page);
+        Page<User> users = userRepository.findAll(page);
+
+        int pageNumber = page.getPageNumber();
+        int totalPages = users.getTotalPages();
+
+        if (pageNumber >= totalPages)
+            throw new ServiceException(
+                    "Page out of bounds",
+                    ServiceExceptionCodes.BAD_ID,
+                    HttpStatus.BAD_REQUEST);
+
+        return users;
     }
 
     @Override
@@ -52,6 +67,14 @@ public class UserServiceImpl implements UserService {
     public void updateUser(User entity) {
         User user = getUserIfExists(entity.getId());
         user.setOrders(entity.getOrders());
+    }
+
+    @Override
+    public Tag getTheMostWidelyUsedTagOfUserWithTheHighestCostOfAllOrders(Long userId) {
+        return tagRepository.findMostWidelyUsedTagOfUserWithTheHighestCostOfAllOrders(userId)
+                .orElseThrow(() -> new ServiceException(ServiceExceptionMessages.TAG_NOT_FOUND,
+                        ServiceExceptionCodes.NO_ENTITIES,
+                        HttpStatus.NOT_FOUND));
     }
 
     private User getUserIfExists(long id) {

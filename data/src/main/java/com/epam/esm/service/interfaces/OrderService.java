@@ -10,7 +10,7 @@ public interface OrderService {
 
     Page<Order> getAllOrders(Pageable page);
 
-    void removeOrder(Order item);
+    void removeOrder(Long id);
 
     Page<Order> getAllOrdersByUserId(Long userId, Pageable page);
 

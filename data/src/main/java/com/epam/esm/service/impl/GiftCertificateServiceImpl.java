@@ -34,7 +34,21 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public Page<GiftCertificate> getAllCertificates(Pageable page) {
-        return certificateRepository.findAll(page);
+        Page<GiftCertificate> certificatePage = certificateRepository.findAll(page);
+        checkPageBounds(page, certificatePage);
+
+        return certificatePage;
+    }
+
+    private static void checkPageBounds(Pageable page, Page<GiftCertificate> certificatePage) {
+        int pageNumber = page.getPageNumber();
+        int totalPages = certificatePage.getTotalPages();
+
+        if(pageNumber >= totalPages)
+            throw new ServiceException(
+                    "Page out of bounds",
+                    ServiceExceptionCodes.BAD_ID,
+                    HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -123,6 +137,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public Page<GiftCertificate> getCertificatesByPartOfName(String name, Pageable page) {
         Page<GiftCertificate> certificates = certificateRepository.getCertificatesWithTagsByPartOfName(name, page);
+        checkPageBounds(page, certificates);
         checkIfCertificatesExists(certificates);
         return certificates;
     }
@@ -130,6 +145,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public Page<GiftCertificate> getCertificatesByPartOfDescription(String description, Pageable page) {
         Page<GiftCertificate> certificates = certificateRepository.getCertificatesWithTagsByPartOfDescription(description, page);
+        checkPageBounds(page, certificates);
         checkIfCertificatesExists(certificates);
         return certificates;
     }
@@ -137,6 +153,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public Page<GiftCertificate> getCertificatesByPartOfTagName(String tagNames, Pageable page) {
         Page<GiftCertificate> certificates = certificateRepository.getCertificatesWithTagsByPartOfTagName(tagNames, page);
+        checkPageBounds(page, certificates);
         checkIfCertificatesExists(certificates);
         return certificates;
     }
