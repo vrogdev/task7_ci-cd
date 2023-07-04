@@ -17,14 +17,15 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
 
         String exceptionMessage = exception.getMessage();
-        String exceptionCode = ((ServiceException)exception).getCode();
-        HttpStatus httpStatus = ((ServiceException)exception).getHttpStatus();
+        String exceptionCode = ((ServiceException) exception).getCode();
+        HttpStatus httpStatus = ((ServiceException) exception).getHttpStatus();
 
         exceptionResponse.setErrorMessage(exceptionMessage);
         exceptionResponse.setErrorCode(exceptionCode);
 
         return new ResponseEntity<>(exceptionResponse, httpStatus);
     }
+
     @ExceptionHandler({
             PropertyReferenceException.class
     })
@@ -35,6 +36,17 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
+/*    @ExceptionHandler({
+            AuthenticationException.class
+    })
+    public final ResponseEntity<ExceptionResponse> handle403AuthenticatedException(Exception exception) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse();
+        exceptionResponse.setErrorMessage(exception.getMessage() + " Invalid username or password");
+        exceptionResponse.setErrorCode(HttpStatus.UNAUTHORIZED.toString());
+        HttpStatus httpStatus = ((AccessDeniedException)exception).getHttpStatus();
+
+        return new ResponseEntity<>(exceptionResponse, httpStatus);
+    }*/
 
 /*    @ExceptionHandler({
             JsonProcessingException.class
