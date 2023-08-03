@@ -5,7 +5,7 @@
             stage('Build') {
                 steps {
                     git branch: 'main', url: 'https://github.com/vrogdev/task7_ci-cd.git'
-                    sh 'mvn clean compileJava'
+                    sh 'mvn clean compile'
                 }
             }
             stage('Test') {
