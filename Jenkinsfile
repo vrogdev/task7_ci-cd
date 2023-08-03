@@ -16,8 +16,7 @@
             stage('SonarQube Analysis') {
                 steps {
                     withSonarQubeEnv(installationName:'sq1') {
-                        sh "mvn sonar:sonar -Dsonar.host.url=http://localhost:9000
-                              -Dsonar.login=squ_733c2ee06dd96019e53b39a1741a57b3ec940840"
+                        sh "mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=squ_733c2ee06dd96019e53b39a1741a57b3ec940840"
                     }
                     jacoco()
                 }
