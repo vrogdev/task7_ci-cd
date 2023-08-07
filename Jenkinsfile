@@ -29,10 +29,10 @@
                 }
             }
 
-            stage('Deploy app') {
+            stage('Deploy') {
                 steps {
                     bat 'mvn package'
-                    deploy adapters: [tomcat9(credentialsId: 'Tomcat', path: '', url: 'http://localhost:8080/')], contextPath: 'TomcatMavenApp', war: '**/*.war'
+                    deploy adapters: [tomcat9(credentialsId: 'Tomcat', path: '', url: 'http://localhost:8080/')], contextPath: 'TomcatMavenApp', war: '**/*-exe.war'
                 }
             }
         }
