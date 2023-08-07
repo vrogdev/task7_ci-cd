@@ -15,16 +15,24 @@
             stage('SonarQube Analysis') {
                 steps {
                     withSonarQubeEnv(installationName:'sq1') {
-                        bat "mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=squ_733c2ee06dd96019e53b39a1741a57b3ec940840"
+                        bat "mvn sonar:sonar"
                     }
+                    jacoco()
                 }
             }
 
             stage('SQuality Gate') {
                 steps {
-                    timeout(time: 5, unit: 'MINUTES') {
+                    timeout(time: 1, unit: 'MINUTES') {
                         waitForQualityGate abortPipeline: true
                     }
+                }
+            }
+
+            stage('Deploy app') {
+                steps {
+                    bat 'mvn package'
+                    deploy adapters: [tomcat9(credentialsId: 'Tomcat', path: '', url: 'http://localhost:8080/')], contextPath: 'TomcatMavenApp', war: '**/*.war'
                 }
             }
         }
