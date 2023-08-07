@@ -84,7 +84,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.epam.esm.ServletInitializer</mainClass>
+                    <mainClass>com.epam.esm.ApplicationRunner</mainClass>
                     <classifier>exe</classifier>
                 </configuration>
             </plugin>
